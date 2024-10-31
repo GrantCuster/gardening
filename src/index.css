@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #282828;
+  --fg: #ebdbb2;
+  --black: #282828;
+  --red: #cc241d;
+  --green: #98971a;
+  --yellow: #d79921;
+  --blue: #458588;
+  --purple: #b16286;
+  --aqua: #689d6a;
+  --gray: #a89984;
+  --bright-black: #928374;
+  --bright-red: #fb4934;
+  --bright-green: #b8bb26;
+  --bright-yellow: #fabd2f;
+  --bright-blue: #83a598;
+  --bright-purple: #d3869b;
+  --bright-aqua: #8ec07c;
+  --bright-gray: #ebdbb2;
+}
+@font-face {
+  font-family: "DepartureMono";
+  src: url("/DepartureMono-Regular.woff") format("woff");
+}
+
+html {
+  font-family: "DepartureMono";
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+.border,
+.border-t,
+.border-r,
+.border-b,
+.border-l {
+  border-color: var(--gray);
+}
+
+.sans-serif {
+  font-size: 16px;
+  font-family: sans-serif;
+}
+.sans-serif p {
+  margin-bottom: 1em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+h1 {
+  color: #d79921;
+}
+
+h1:before {
+  /* content: '# '; */
+}
+
+h2 {
+  color: #98971a;
+}
+
+h2:before {
+  /* content: '## '; */
+}
+
+h3 {
+  color: #458588;
+}
+
+h3:before {
+  /* content: '### '; */
+}
+
+.markdown ul li {
+  position: relative;
+  margin-left: 1.25rem;
+}
+
+.markdown ul li:before {
+  position: absolute;
+  top: 0;
+  left: -1.25rem;
+  content: "- ";
+  color: #7c6f64;
+  font-weight: 700;
+}
+
+.markdown p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+ol,
+dl,
+blockquote,
+pre,
+table,
+figure,
+hr {
+  margin: 1rem 0;
+}
+
+.markdown ul ul,
+ol ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown img {
+  cursor: zoom-in;
+}
+
+.markdown figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.markdown a {
+  color: #b16286;
+  text-decoration: underline;
+}
+
+.markdown blockquote {
+  border-left: 0.25rem solid #7c6f64;
+  padding-left: 1rem;
+  margin-left: 0;
+}
+
+.image-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  cursor: zoom-out;
+}
