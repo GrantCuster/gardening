@@ -18,6 +18,7 @@ export function Preview() {
     <ReactMarkdown
       className="h-full w-full px-3 py-2 markdown overflow-auto sans-serif"
       components={{
+        // @ts-ignore
         img: ({ node, ...props }) => <MarkdownImageWithCaption {...props} />,
         p: ({ node, ...props }) => <div {...props} className="my-4" />,
       }}
