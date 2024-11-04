@@ -31,6 +31,11 @@ export function usePostPreview() {
       }
     }
 
+    const images = text.match(/!\[.*\]\(.*\)/g);
+    const firstImage = images
+      ? images[0]
+      : "https://grant-uploader.s3.amazonaws.com/2024-10-30-10-48-30-2000.jpg";
+
     let previewImage = firstImage?.split("(")[1].split(")")[0]!;
     if (previewImage.includes(".gif")) {
       previewImage = previewImage.replace(".gif", "-preview.jpg");
@@ -47,7 +52,7 @@ export function usePostPreview() {
         ? firstImage.split("]")[0].slice(2)
         : "Post on Grant's Garden",
       previewImage: previewImage,
-      url: domain + "/" + file.split(".")[0] + "/",
+      url: domain + "/" + fileName.split(".")[0] + "/",
     };
   };
 }

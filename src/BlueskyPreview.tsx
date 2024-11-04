@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { activeFileAtom, activeTextAtom, agentRefAtom } from "./atoms";
+import { activeFileAtom, activeTextAtom, agentRefAtom, saveBoxAtom } from "./atoms";
 import { RichText } from "@atproto/api";
 import { AtpAgent } from "@atproto/api";
 import { useEffect, useState } from "react";
@@ -27,11 +27,18 @@ export function BlueskyPreview() {
   const [file] = useAtom(activeFileAtom);
   const [post, setPost] = useState<any>(null);
   const getPreview = usePostPreview();
+  const [, setSaveBox] = useAtom(saveBoxAtom);
 
   async function handlePost() {
     if (!post) {
       return;
     }
+
+    setSaveBox({
+      isSaving: true,
+      isDone: false,
+      message: "Posting to Bluesky...",
+    });
 
     const postIt = await fetch("api/postToBluesky", {
       method: "POST",
@@ -42,6 +49,11 @@ export function BlueskyPreview() {
     });
 
     console.log(postIt);
+    setSaveBox({
+      isSaving: true,
+      isDone: true,
+      message: "Posted to Bluesky!",
+    });
 
     console.log("posted");
   }
@@ -54,7 +66,7 @@ export function BlueskyPreview() {
       );
 
       const rt = new RichText({
-        text: ("🌱 " + stripped).slice(0, 300),
+        text: ("🌱 " + excerpt).slice(0, 300),
       });
       await rt.detectFacets(agentRef.current!);
 

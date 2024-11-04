@@ -18,3 +18,5 @@ export const showBlueskyPreviewAtom = atom(false);
 export const agentRefAtom = atom<{ current: AtpAgent | null }>({
   current: null,
 });
+
+export const saveBoxAtom = atom({ isSaving: false, isDone: false, message: "Saving post..." });

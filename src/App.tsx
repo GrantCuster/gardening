@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useAtom } from "jotai";
 import {
   activeFileAtom,
@@ -6,6 +6,7 @@ import {
   isNarrowAtom,
   isPhoneAtom,
   modeAtom,
+  saveBoxAtom,
   showBlueskyPreviewAtom,
   showPostPickerAtom,
   showSidePreviewAtom,
@@ -30,6 +31,7 @@ function App() {
   const [showBlueskyPreview, setShowBlueskyPreview] = useAtom(
     showBlueskyPreviewAtom,
   );
+  const [saveBox, setSaveBox] = useAtom(saveBoxAtom);
 
   useEffect(() => {
     // format YYYY-MM-DD-HH-MM-SS
@@ -142,16 +144,19 @@ function App() {
 
               <button
                 onClick={() => setShowBlueskyPreview(!showBlueskyPreview)}
-                className="underline px-2 py-1 text-sm focus:outline-none"
-                style={{ color: "var(--gray)" }}
+                className="px-2 py-1 text-sm focus:outline-none"
+                style={{
+                  color: "var(--gray)",
+                  textDecoration: showBlueskyPreview ? "" : "underline",
+                }}
               >
                 BLUESKY
               </button>
             </div>
-            {showPreviewInEditor ? (
-              <Preview />
-            ) : showBlueSkyPreviewInEditor ? (
+            {showBlueSkyPreviewInEditor ? (
               <BlueskyPreview />
+            ) : showPreviewInEditor ? (
+              <Preview />
             ) : (
               <Editor />
             )}
@@ -160,8 +165,68 @@ function App() {
         </div>
       </div>
       {showPostPicker ? <PostPicker /> : null}
+      {saveBox.isSaving ? <SaveBox /> : null}
     </div>
   );
 }
 
 export default App;
+
+function SaveBox() {
+  const [progress, setProgress] = useState(0);
+  const [saveBox, setSaveBox] = useAtom(saveBoxAtom);
+  const intervalRef = useRef<number>();
+
+  useEffect(() => {
+    setProgress(0);
+    intervalRef.current = window.setInterval(() => {
+      setProgress((prev) => {
+        if (prev === 90) {
+          window.clearInterval(intervalRef.current);
+        } else {
+          clearInterval(intervalRef.current);
+        }
+        return prev + 1;
+      });
+    }, 20);
+    return () => {
+      window.clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (saveBox.isDone) {
+      setProgress(100);
+      window.setTimeout(() => {
+        setSaveBox({ isSaving: false, isDone: false, message: "" });
+      }, 1000);
+    }
+  }, [saveBox.isDone, setSaveBox]);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex">
+      <div
+        className="m-auto flex flex-col gap-2 items-center bg-neutral-800 w-full border px-3 py-2"
+        style={{ maxWidth: "60ch" }}
+      >
+        <div className="text-center">{saveBox.message}</div>
+        <div
+          className="w-full mb-2 relative"
+          style={{
+            maxWidth: "20ch",
+            height: "1.25rem",
+            background: "var(--gray)",
+          }}
+        >
+          <div
+            className="h-full absolute left-0 top-0"
+            style={{
+              width: `${progress}%`,
+              background: "var(--green)",
+            }}
+          ></div>
+        </div>
+      </div>
+    </div>
+  );
+}
