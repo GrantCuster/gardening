@@ -8,10 +8,12 @@ import {
   modeAtom,
   saveBoxAtom,
   showBlueskyPreviewAtom,
+  showMastodonPreviewAtom,
   showPostPickerAtom,
   showSidePreviewAtom,
 } from "./atoms";
 import { BlueskyPreview } from "./BlueskyPreview";
+import { MastodonPreview } from "./MastodonPreview";
 import { UploaderButton } from "./UploaderButton";
 import { PostPicker } from "./PostPicker";
 import { Preview } from "./Preview";
@@ -30,6 +32,9 @@ function App() {
   const [activeFile, setActiveFile] = useAtom(activeFileAtom);
   const [showBlueskyPreview, setShowBlueskyPreview] = useAtom(
     showBlueskyPreviewAtom,
+  );
+  const [showMastodonPreview, setShowMastodonPreview] = useAtom(
+    showMastodonPreviewAtom,
   );
   const [saveBox, setSaveBox] = useAtom(saveBoxAtom);
 
@@ -62,6 +67,7 @@ function App() {
 
   const showPreviewInEditor = mode !== "editor" && !showSidePreviewPossible;
   const showBlueSkyPreviewInEditor = showBlueskyPreview;
+  const showMastodonPreviewInEditor = showMastodonPreview;
 
   return (
     <div className="h-[100dvh] flex flex-col overflow-hidden">
@@ -152,9 +158,23 @@ function App() {
               >
                 BLUESKY
               </button>
+
+              <button
+                onClick={() => setShowMastodonPreview(!showMastodonPreview)}
+                className="px-2 py-1 text-sm uppercase focus:outline-none"
+                style={{
+                  color: "var(--gray)",
+                  textDecoration: showMastodonPreview ? "" : "underline",
+                }}
+              >
+                Mastodon
+              </button>
+ 
             </div>
             {showBlueSkyPreviewInEditor ? (
               <BlueskyPreview />
+            ) : showMastodonPreviewInEditor ? (
+              <MastodonPreview />
             ) : showPreviewInEditor ? (
               <Preview />
             ) : (
@@ -230,3 +250,4 @@ function SaveBox() {
     </div>
   );
 }
+

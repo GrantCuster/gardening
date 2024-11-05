@@ -1,28 +1,14 @@
 import { useAtom } from "jotai";
-import { activeFileAtom, activeTextAtom, agentRefAtom, saveBoxAtom } from "./atoms";
-import { RichText } from "@atproto/api";
-import { AtpAgent } from "@atproto/api";
+import {
+  activeFileAtom,
+  activeTextAtom,
+  saveBoxAtom,
+} from "./atoms";
 import { useEffect, useState } from "react";
 import { domain } from "./consts";
 import { getPreview } from "./hooks";
 
-function useAgent() {
-  const [agentRef] = useAtom(agentRefAtom);
-
-  async function main() {
-    if (!agentRef.current) {
-      agentRef.current = new AtpAgent({
-        service: "https://bsky.social",
-      });
-    }
-  }
-
-  main();
-}
-
-export function BlueskyPreview() {
-  useAgent();
-  const [agentRef] = useAtom(agentRefAtom);
+export function MastodonPreview() {
   const [text] = useAtom(activeTextAtom);
   const [file] = useAtom(activeFileAtom);
   const [post, setPost] = useState<any>(null);
@@ -36,10 +22,10 @@ export function BlueskyPreview() {
     setSaveBox({
       isSaving: true,
       isDone: false,
-      message: "Posting to Bluesky...",
+      message: "Posting to Mastodon...",
     });
 
-    const postIt = await fetch("api/postToBluesky", {
+    const postIt = await fetch("api/postToMastodon", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,11 +33,10 @@ export function BlueskyPreview() {
       body: JSON.stringify({ post: post }),
     });
 
-    console.log(postIt);
     setSaveBox({
       isSaving: true,
       isDone: true,
-      message: "Posted to Bluesky!",
+      message: "Posted to Mastodon!",
     });
 
     console.log("posted");
@@ -59,29 +44,14 @@ export function BlueskyPreview() {
 
   useEffect(() => {
     async function main() {
-      const { excerpt, title, description, previewImage, url } = getPreview(
+      const { excerpt,  url } = getPreview(
         text,
         file,
       );
 
-      const rt = new RichText({
-        text: ("🌱 " + excerpt).slice(0, 300),
-      });
-      await rt.detectFacets(agentRef.current!);
-
       let post = {
-        text: rt.text,
-        facets: rt.facets,
-        createdAt: new Date().toISOString(),
-        embed: {
-          $type: "app.bsky.embed.external",
-          external: {
-            uri: url,
-            title: title,
-            description: description,
-            thumb: previewImage,
-          },
-        },
+        status: ("🌱 " + excerpt).slice(0, 300) + "\n" + url,
+        visibility: "public",
       };
       setPost(post);
     }

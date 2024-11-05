@@ -8,6 +8,8 @@ const path = require("path");
 const AtpAgent = require("@atproto/api").AtpAgent;
 require("dotenv").config();
 const ViteExpress = require("vite-express");
+const { createRestAPIClient } = require("masto");
+const mastoCreate = require("masto").createRestAPIClient;
 
 const agent = new AtpAgent({
   service: "https://bsky.social",
@@ -40,10 +42,10 @@ const formatDate = () => {
 
 // Set up multer for file uploads
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function(req, file, cb) {
     cb(null, "uploads/");
   },
-  filename: function (req, file, cb) {
+  filename: function(req, file, cb) {
     const formattedDate = formatDate();
     cb(null, formattedDate + path.extname(file.originalname)); // Append the file extension
   },
@@ -359,8 +361,25 @@ app.post("/api/postToBluesky", async (req, res) => {
 
     res.json({ success: "posted" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).send("Error uploading file to agent.");
+  }
+});
+
+app.post("/api/postToMastodon", async (req, res) => {
+  const post = req.body.post;
+  try {
+    const client = createRestAPIClient({
+      url: "https://mastodon.social",
+      accessToken: process.env.MASTODON_ACCESS_TOKEN,
+    });
+
+    await client.v1.statuses.create(post);
+
+    res.json({ success: "posted" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error posting to mastodon.");
   }
 });
 

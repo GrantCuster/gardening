@@ -14,6 +14,7 @@ export const showPostPickerAtom = atom(false);
 export const bumpAtom = atom(0);
 
 export const showBlueskyPreviewAtom = atom(false);
+export const showMastodonPreviewAtom = atom(false);
 
 export const agentRefAtom = atom<{ current: AtpAgent | null }>({
   current: null,
